@@ -36,7 +36,7 @@ public class OcrExtractor {
             file = File.createTempFile("ocr-", suffix);
             multipartFile.transferTo(file);
             //extract text from the file using Tesseract OCR  library
-            Tesseract tesseract = new Tesseract();
+              Tesseract tesseract = new Tesseract();
             tesseract.setDatapath(Constants.OCR_DATA_PATH);
             tesseract.setDatapath("/usr/share/tesseract/tessdata");
             tesseract.setLanguage("eng");
