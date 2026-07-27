@@ -13,28 +13,32 @@ public abstract class AbstractLogParser implements LogParser {
     protected abstract boolean isStartOfLogEntry(String line);
 
     protected abstract LogEntry parseLogEntryHeader(String line);
+
     protected abstract void handleContinuationLine(LogEntry currentEntry, String line);
+
     @Override
-    public List<LogEntry> parse(ExtractedDocument extractedDocument){
+    public List<LogEntry> parse(ExtractedDocument extractedDocument) {
         String content = extractedDocument.getContent();
         List<LogEntry> logEntries = new ArrayList<>();
         LogEntry currentEntry = null;
 
-        for(String lineString : content.split("\r?\n")){
-            if(isStartOfLogEntry(lineString)){
+        for (String lineString : content.split("\r?\n")) {
+            if (isStartOfLogEntry(lineString)) {
                 LogEntry logEntry = parseLogEntryHeader(lineString);
-                if(currentEntry != null) {
-                    logEntries.add(currentEntry);
+                if (logEntry != null) {
+
+                    if (currentEntry != null) {
+                        logEntries.add(currentEntry);
+                    }
+                    currentEntry = logEntry;
                 }
-                currentEntry = logEntry;
-            }
-            else{
-                if(StringUtils.hasText(lineString) && currentEntry != null){
+            } else {
+                if (StringUtils.hasText(lineString) && currentEntry != null) {
                     handleContinuationLine(currentEntry, lineString);
                 }
             }
         }
-        if(currentEntry != null){
+        if (currentEntry != null) {
             logEntries.add(currentEntry);
         }
         return logEntries;

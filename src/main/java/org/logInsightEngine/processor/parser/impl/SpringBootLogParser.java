@@ -18,20 +18,32 @@ import java.util.Arrays;
 public class SpringBootLogParser extends AbstractLogParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringBootLogParser.class);
 
+
     @Override
-    public boolean supports(String message) {
+    public boolean supports(String document) {
+        if (StringUtils.isBlank(document)) {
+            return false;
+        }
+
+        String[] lines = document.split("\\R");
+        for (String line : lines) {
+            if (StringUtils.isBlank(line)) {
+                continue;
+            }
+            return isStartOfLogEntry(line);
+        }
         return false;
     }
 
     @Override
     protected boolean isStartOfLogEntry(String line) {
         try {
+            if (StringUtils.isBlank(line))
+                return false;
             int firstWhitespace = line.indexOf(' ');
             if (firstWhitespace == -1) {
                 return false; // Entire line is one token or malformed
             }
-            if (StringUtils.isBlank(line))
-                return false;
             String firstToken = line.substring(0, firstWhitespace);
             Instant.parse(firstToken);
             return true;
@@ -70,7 +82,7 @@ public class SpringBootLogParser extends AbstractLogParser {
 
     @Override
     protected void handleContinuationLine(LogEntry currentEntry, String line) {
-        if (line.startsWith("at") || line.startsWith("Caused by: ") || line.startsWith("Suppressed") || line.startsWith("...")) {
+        if (line.startsWith("at ") || line.startsWith("Caused by: ") || line.startsWith("Suppressed:") || line.startsWith("...")) {
             currentEntry.appendToStackTrace(line);
         } else {
             currentEntry.appendToMessage(line);
@@ -78,6 +90,7 @@ public class SpringBootLogParser extends AbstractLogParser {
     }
 
     private String validateHeader(String[] parts, int separatorIndex) {
+
 
         if (parts.length < 2) {
             return "Expected timestamp and log level.";
@@ -89,6 +102,11 @@ public class SpringBootLogParser extends AbstractLogParser {
 
         if (separatorIndex >= parts.length - 1) {
             return "Missing log message after ':' separator.";
+        }
+        try {
+            LogLevel.valueOf(parts[1]);
+        } catch (Exception e) {
+            return "Invalid log level: " + parts[1] + ".";
         }
 
         return null;
@@ -122,7 +140,7 @@ public class SpringBootLogParser extends AbstractLogParser {
             }
         }
 
-        return "";
+        return null;
     }
 
     private int findMessageSeparator(String[] parts) {
