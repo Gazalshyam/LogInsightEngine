@@ -12,12 +12,12 @@ public class LogParserFactory {
         this.parsers = parsers;
     }
 
-    public LogParser getAvailableParsers(String message) {
+    public LogParser getParser(String content) {
         for (LogParser parser : parsers) {
-            if (parser.supports(message)) {
+            if (parser.supports(content)) {
                 return parser;
             }
         }
-        throw new UnsupportedOperationException("Unsupported file type: " + message);
+        throw new UnsupportedOperationException("Unsupported file type: " + content);
     }
 }
