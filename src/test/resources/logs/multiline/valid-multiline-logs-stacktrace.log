@@ -1,0 +1,11 @@
+2026-07-29T10:30:15.842Z ERROR 12345 --- [main] org.logInsightEngine.document.parser.impl.SpringBootLogParser : Failed to parse uploaded log file
+java.lang.NullPointerException: Cannot invoke "String.trim()" because "line" is null
+	at org.logInsightEngine.document.parser.impl.SpringBootLogParser.parse(SpringBootLogParser.java:82)
+	at org.logInsightEngine.service.LogAnalysisService.analyze(LogAnalysisService.java:45)
+	at org.logInsightEngine.controller.LogAnalysisController.upload(LogAnalysisController.java:28)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+Caused by: java.lang.IllegalArgumentException: Log line cannot be null
+	at org.logInsightEngine.document.parser.impl.AbstractLogParser.validateHeader(AbstractLogParser.java:36)
+	... 4 common frames omitted
+2026-07-29T10:20:12.883Z ERROR 12345 --- [main] org.logInsightEngine.document.parser.impl.SpringBootLogParser : Failed to parse log document

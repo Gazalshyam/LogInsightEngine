@@ -1,11 +1,11 @@
 package org.logInsightEngine.service;
 
-import org.logInsightEngine.dtos.AnalyzeRequest;
-import org.logInsightEngine.dtos.AnalyzeResponse;
-import org.logInsightEngine.processor.InputNormalizer;
-import org.springframework.stereotype.Service;
+import org.logInsightEngine.document.normalizer.InputNormalizer;
+import org.logInsightEngine.dtos.request.AnalyzeRequest;
+import org.logInsightEngine.dtos.response.AnalyzeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
@@ -13,9 +13,10 @@ import java.util.UUID;
 public class AnalysisService {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalysisService.class);
-    private InputNormalizer inputNormalizer;
-    public AnalysisService(InputNormalizer inputNormalizer){
-     this.inputNormalizer = inputNormalizer;
+    private final InputNormalizer inputNormalizer;
+
+    public AnalysisService(InputNormalizer inputNormalizer) {
+        this.inputNormalizer = inputNormalizer;
     }
 
     public AnalyzeResponse submitAnalysis(AnalyzeRequest analyzeRequest) {

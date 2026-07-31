@@ -1,0 +1,1 @@
+2026-07-29T10:18:45.621Z WARN 12345 --- [main] org.logInsightEngine.service.DocumentService : Unsupported file extension '.csv'. Falling back to plain text extraction.

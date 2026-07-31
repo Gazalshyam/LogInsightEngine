@@ -1,0 +1,2 @@
+2026-07-29T10:20:12.883Z HELLO 12345 ---  org.logInsightEngine.document.parser.impl.SpringBootLogParser : Failed to parse log document
+2026-07-29T10:20:12.883Z ERROR 12345 --- [virtual] org.logInsightEngine.document.parser.impl.SpringBootLogParser : Failed to parse log document

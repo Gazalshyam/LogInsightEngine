@@ -1,0 +1,27 @@
+package org.logInsightEngine.model.domain;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ExtractedDocument {
+
+    private String fileName;
+
+    private String documentType;
+
+    private String content;
+
+    private long size;
+
+    private long lineCount;
+
+
+}
+
