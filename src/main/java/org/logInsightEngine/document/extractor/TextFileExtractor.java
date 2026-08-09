@@ -8,20 +8,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Component
-public class PdfFileExtractor implements FileExtractor {
+public class TextFileExtractor implements FileExtractor {
+    @Override
     public boolean supports(AnalyzeRequest analyzeRequest) {
-
         if(analyzeRequest.getLogFile() == null) {
             return false;
         }
         MultipartFile multipartFile = analyzeRequest.getLogFile();
-        return multipartFile.getOriginalFilename().toLowerCase().endsWith(".pdf");
+        return multipartFile.getOriginalFilename().toLowerCase().endsWith(".txt");
     }
 
     @Override
     public ExtractedDocument extract(AnalyzeRequest analyzeRequest) throws IOException {
         return new ExtractedDocument();
     }
-
-
 }

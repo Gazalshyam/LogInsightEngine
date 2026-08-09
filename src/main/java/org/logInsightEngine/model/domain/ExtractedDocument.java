@@ -14,7 +14,7 @@ public class ExtractedDocument {
 
     private String fileName;
 
-    private String documentType;
+    private DocumentType documentType;
 
     private String content;
 
