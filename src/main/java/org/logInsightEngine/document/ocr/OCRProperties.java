@@ -1,9 +1,17 @@
 package org.logInsightEngine.document.ocr;
 
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
+@ConfigurationProperties(prefix = "ocr")
 public class OCRProperties {
-    @Value("$ocr.tessdata.path")
-    public static final String OCR_DATA_PATH = "/tmp/tessdata/";
+    private String tessdataPath = "/tmp/tessdata/";
+
+    public String getTessdataPath() {
+        return tessdataPath;
+    }
+
+    public void setTessdataPath(String tessdataPath) {
+        this.tessdataPath = tessdataPath;
+    }
 }

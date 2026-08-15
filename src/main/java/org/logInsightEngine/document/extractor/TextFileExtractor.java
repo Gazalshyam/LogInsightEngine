@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class TextFileExtractor implements FileExtractor {
@@ -20,7 +21,7 @@ public class TextFileExtractor implements FileExtractor {
     @Override
     public ExtractedDocument extract(MultipartFile multipartFile) throws IOException {
         // Implementation for extracting text from a text file
-        String content = new String(multipartFile.getBytes());
+        String content = new String(multipartFile.getBytes(), StandardCharsets.UTF_8);
         return ExtractedDocument.builder().content(content).documentType(DocumentType.TEXT).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
     }
 }

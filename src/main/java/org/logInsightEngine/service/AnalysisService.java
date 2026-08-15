@@ -1,5 +1,6 @@
 package org.logInsightEngine.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.logInsightEngine.document.extractor.FileExtractor;
 import org.logInsightEngine.document.extractor.FileExtractorFactory;
 import org.logInsightEngine.document.parser.LogParser;
@@ -9,8 +10,7 @@ import org.logInsightEngine.dtos.response.AnalyzeResponse;
 import org.logInsightEngine.model.domain.DocumentType;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 import org.logInsightEngine.model.domain.LogEntry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +18,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class AnalysisService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnalysisService.class);
     private final FileExtractorFactory fileExtractorFactory;
     private final LogParserFactory logParserFactory;
 
@@ -36,21 +36,18 @@ public class AnalysisService {
             AnalyzeResponse analyzeResponse = new AnalyzeResponse();
             analyzeResponse.setStatus("success");
             analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
-//            String normalizedInput = inputNormalizer.normalize(analyzeRequest);
             ExtractedDocument extractedDocument = null;
             if (analyzeRequest.getLogFile() != null) {
                 FileExtractor extractor = fileExtractorFactory.getExtractor(analyzeRequest.getLogFile());
                 extractedDocument = extractor.extract(analyzeRequest.getLogFile());
-            }
-            if (analyzeRequest.getLogData() != null) {
+            } else if (analyzeRequest.getLogData() != null) {
                 extractedDocument = ExtractedDocument.builder().content(analyzeRequest.getLogData()).fileName("raw_text" + System.currentTimeMillis()).documentType(DocumentType.RAW_TEXT).size(analyzeRequest.getLogData().getBytes(StandardCharsets.UTF_8).length).lineCount(analyzeRequest.getLogData().lines().count()).build();
             }
             LogParser logParser = logParserFactory.getParser(extractedDocument.getContent());
             List<LogEntry> parsedLogEntries = logParser.parse(extractedDocument);
-//            logger.info("Normalized Input for Analysis ID {}: \n{}", analyzeResponse.getAnalysisId(), normalizedInput);
             return analyzeResponse;
         } catch (Exception e) {
-            logger.error("Error while processing analysis request", e);
+            log.error("Error while processing analysis request", e);
             return new AnalyzeResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
         }
     }

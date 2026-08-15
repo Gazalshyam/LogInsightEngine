@@ -1,5 +1,6 @@
 package org.logInsightEngine;
 
+import org.logInsightEngine.model.domain.DocumentType;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class TestUtils {
 
         String content = readResource(resourcePath);
 
-        return ExtractedDocument.builder().fileName(resourcePath.substring(resourcePath.lastIndexOf('/') + 1)).sourceType("TEXT").content(content).size(content.length()).lineCount(content.lines().count()).build();
+        return ExtractedDocument.builder().fileName(resourcePath.substring(resourcePath.lastIndexOf('/') + 1)).documentType(DocumentType.TEXT).content(content).size(content.length()).lineCount(content.lines().count()).build();
     }
 
     public static String readResource(String resourcePath) throws IOException {

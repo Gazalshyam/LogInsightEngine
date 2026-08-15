@@ -1,5 +1,7 @@
 package org.logInsightEngine.document.extractor;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.logInsightEngine.model.domain.DocumentType;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 import org.springframework.stereotype.Component;
@@ -19,8 +21,12 @@ public class PdfFileExtractor implements FileExtractor {
 
     @Override
     public ExtractedDocument extract(MultipartFile multipartFile) throws IOException {
-        String content = new String(multipartFile.getBytes());
-        return ExtractedDocument.builder().content(content).documentType(DocumentType.PDF).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
+        try (PDDocument document = Loader.loadPDF(multipartFile.getBytes())) {
+            String content = new org.apache.pdfbox.text.PDFTextStripper().getText(document);
+            return ExtractedDocument.builder().content(content).documentType(DocumentType.PDF).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
+        } catch (IOException e) {
+            throw e;
+        }
     }
 
 

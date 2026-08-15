@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.rmi.UnexpectedException;
+import java.util.zip.GZIPInputStream;
 
 @Component
 public class GzipFileExtractor implements FileExtractor {
@@ -18,7 +21,11 @@ public class GzipFileExtractor implements FileExtractor {
 
     @Override
     public ExtractedDocument extract(MultipartFile multipartFile) throws IOException {
-        String content = new String(multipartFile.getBytes());
-        return ExtractedDocument.builder().content(content).documentType(DocumentType.GZIP).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
+        try (GZIPInputStream gzipInputStream = new GZIPInputStream(multipartFile.getInputStream())) {
+            String content = new String(gzipInputStream.readAllBytes(), StandardCharsets.UTF_8);
+            return ExtractedDocument.builder().content(content).documentType(DocumentType.GZIP).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
+        } catch (Exception e) {
+            throw new UnexpectedException("Unable to extract content from GZIP file: " + multipartFile.getOriginalFilename() + ". Error: " + e.getMessage());
+        }
     }
 }
