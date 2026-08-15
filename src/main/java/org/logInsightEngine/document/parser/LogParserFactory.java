@@ -13,7 +13,7 @@ public class LogParserFactory {
     }
 
     public LogParser getParser(String content) {
-        if(content == null || content.isEmpty()) {
+        if (content == null || content.isEmpty()) {
             throw new IllegalArgumentException("Content cannot be null or empty.");
         }
         for (LogParser parser : parsers) {

@@ -1,6 +1,5 @@
 package org.logInsightEngine.document.extractor;
 
-import org.logInsightEngine.dtos.request.AnalyzeRequest;
 import org.logInsightEngine.exception.UnsupportedFileTypeException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +15,7 @@ public class FileExtractorFactory {
     }
 
     // currently supports .log, .gz. and .pdf
-    public FileExtractor getExtractor(MultipartFile logFile ) throws UnsupportedFileTypeException {
+    public FileExtractor getExtractor(MultipartFile logFile) throws UnsupportedFileTypeException {
 
         for (FileExtractor extractor : extractors) {
             if (extractor.supports(logFile)) {

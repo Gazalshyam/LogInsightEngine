@@ -17,6 +17,7 @@ import java.io.File;
 public class OcrExtractor {
     private final Tesseract tesseract = new Tesseract();
     private final Logger logger = LoggerFactory.getLogger(OcrExtractor.class);
+
     public OcrExtractor() {
         ImageIO.scanForPlugins();
     }

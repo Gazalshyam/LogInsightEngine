@@ -1,6 +1,5 @@
 package org.logInsightEngine.document.extractor;
 
-import org.logInsightEngine.dtos.request.AnalyzeRequest;
 import org.logInsightEngine.model.domain.DocumentType;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,7 @@ import java.io.IOException;
 public class TextFileExtractor implements FileExtractor {
     @Override
     public boolean supports(MultipartFile multipartFile) {
-        if(multipartFile == null || multipartFile.getOriginalFilename() == null) {
+        if (multipartFile == null || multipartFile.getOriginalFilename() == null) {
             return false;
         }
         return multipartFile.getOriginalFilename().toLowerCase().endsWith(".txt");

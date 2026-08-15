@@ -1,7 +1,6 @@
 package org.logInsightEngine.document.extractor;
 
 import org.logInsightEngine.document.ocr.OcrExtractor;
-import org.logInsightEngine.dtos.request.AnalyzeRequest;
 import org.logInsightEngine.model.domain.DocumentType;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ public class ImageFileExtractor implements FileExtractor {
     }
 
     public boolean supports(MultipartFile multipartFile) {
-        if(multipartFile == null || multipartFile.getOriginalFilename() == null) {
+        if (multipartFile == null || multipartFile.getOriginalFilename() == null) {
             return false;
         }
 
@@ -27,8 +26,8 @@ public class ImageFileExtractor implements FileExtractor {
     }
 
     @Override
-    public ExtractedDocument extract(MultipartFile  multipartFile) throws IOException {
+    public ExtractedDocument extract(MultipartFile multipartFile) throws IOException {
         String content = ocrExtractor.extractText(multipartFile);
-       return ExtractedDocument.builder().content(content).documentType(DocumentType.IMAGE).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
+        return ExtractedDocument.builder().content(content).documentType(DocumentType.IMAGE).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
     }
 }

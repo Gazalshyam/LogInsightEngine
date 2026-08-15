@@ -1,6 +1,5 @@
 package org.logInsightEngine.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.logInsightEngine.dtos.request.AnalyzeRequest;
 import org.logInsightEngine.dtos.response.AnalyzeResponse;
 import org.logInsightEngine.service.AnalysisService;
@@ -20,7 +19,7 @@ public class AnalyzeController {
 
     //endpoint to submit log data for analysis
     @PostMapping(value = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AnalyzeResponse> analyze( @ModelAttribute AnalyzeRequest analyzeRequest) {
+    public ResponseEntity<AnalyzeResponse> analyze(@ModelAttribute AnalyzeRequest analyzeRequest) {
         AnalyzeResponse analyzeResponse = analysisService.submitAnalysis(analyzeRequest);
         return ResponseEntity.ok(analyzeResponse);
     }

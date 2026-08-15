@@ -1,6 +1,5 @@
 package org.logInsightEngine.document.extractor;
 
-import org.logInsightEngine.dtos.request.AnalyzeRequest;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 import org.springframework.web.multipart.MultipartFile;
 
