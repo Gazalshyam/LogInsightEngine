@@ -1,6 +1,7 @@
 package org.logInsightEngine.document.extractor;
 
 import org.logInsightEngine.dtos.request.AnalyzeRequest;
+import org.logInsightEngine.model.domain.DocumentType;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,18 +10,18 @@ import java.io.IOException;
 
 @Component
 public class PdfFileExtractor implements FileExtractor {
-    public boolean supports(AnalyzeRequest analyzeRequest) {
+    public boolean supports(MultipartFile multipartFile) {
 
-        if(analyzeRequest.getLogFile() == null) {
+        if(multipartFile == null || multipartFile.getOriginalFilename() == null) {
             return false;
         }
-        MultipartFile multipartFile = analyzeRequest.getLogFile();
         return multipartFile.getOriginalFilename().toLowerCase().endsWith(".pdf");
     }
 
     @Override
-    public ExtractedDocument extract(AnalyzeRequest analyzeRequest) throws IOException {
-        return new ExtractedDocument();
+    public ExtractedDocument extract(MultipartFile multipartFile) throws IOException {
+        String content = new String(multipartFile.getBytes());
+        return ExtractedDocument.builder().content(content).documentType(DocumentType.PDF).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
     }
 
 

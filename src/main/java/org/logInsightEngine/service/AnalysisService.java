@@ -3,6 +3,7 @@ package org.logInsightEngine.service;
 import org.logInsightEngine.document.extractor.FileExtractor;
 import org.logInsightEngine.document.extractor.FileExtractorFactory;
 import org.logInsightEngine.document.parser.LogParser;
+import org.logInsightEngine.document.parser.LogParserFactory;
 import org.logInsightEngine.dtos.request.AnalyzeRequest;
 import org.logInsightEngine.dtos.response.AnalyzeResponse;
 import org.logInsightEngine.model.domain.DocumentType;
@@ -22,11 +23,11 @@ public class AnalysisService {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalysisService.class);
     private final FileExtractorFactory fileExtractorFactory;
-    private final LogParser logParser;
+    private final LogParserFactory logParserFactory;
 
-    public AnalysisService(FileExtractorFactory fileExtractorFactory, LogParser logParser) {
+    public AnalysisService(FileExtractorFactory fileExtractorFactory, LogParserFactory logParserFactory) {
         this.fileExtractorFactory = fileExtractorFactory;
-        this.logParser = logParser;
+        this.logParserFactory = logParserFactory;
     }
 
     public AnalyzeResponse submitAnalysis(AnalyzeRequest analyzeRequest) {
@@ -38,13 +39,13 @@ public class AnalysisService {
 //            String normalizedInput = inputNormalizer.normalize(analyzeRequest);
             ExtractedDocument extractedDocument = null;
             if (analyzeRequest.getLogFile() != null) {
-                FileExtractor extractor = fileExtractorFactory.getExtractor(analyzeRequest);
-
-                extractedDocument = extractor.extract(analyzeRequest);
+                FileExtractor extractor = fileExtractorFactory.getExtractor(analyzeRequest.getLogFile());
+                extractedDocument = extractor.extract(analyzeRequest.getLogFile());
             }
             if (analyzeRequest.getLogData() != null) {
-                extractedDocument = ExtractedDocument.builder().content(analyzeRequest.getLogData()).fileName("raw_text" + System.currentTimeMillis()).documentType(DocumentType.RAW_TEXT).size(analyzeRequest.getLogData().length()).lineCount(analyzeRequest.getLogData().getBytes(StandardCharsets.UTF_8).length).build();
+                extractedDocument = ExtractedDocument.builder().content(analyzeRequest.getLogData()).fileName("raw_text" + System.currentTimeMillis()).documentType(DocumentType.RAW_TEXT).size(analyzeRequest.getLogData().getBytes(StandardCharsets.UTF_8).length).lineCount(analyzeRequest.getLogData().lines().count()).build();
             }
+            LogParser logParser = logParserFactory.getParser(extractedDocument.getContent());
             List<LogEntry> parsedLogEntries = logParser.parse(extractedDocument);
 //            logger.info("Normalized Input for Analysis ID {}: \n{}", analyzeResponse.getAnalysisId(), normalizedInput);
             return analyzeResponse;

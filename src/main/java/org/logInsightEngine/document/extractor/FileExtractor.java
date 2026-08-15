@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public interface FileExtractor {
 
-    boolean supports(AnalyzeRequest analyzeRequest);
+    boolean supports(MultipartFile multipartFile);
 
-    ExtractedDocument extract(AnalyzeRequest analyzeRequest) throws IOException;
+    ExtractedDocument extract(MultipartFile multipartFile) throws IOException;
 
 }

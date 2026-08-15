@@ -16,10 +16,10 @@ public class FileExtractorFactory {
     }
 
     // currently supports .log, .gz. and .pdf
-    public FileExtractor getExtractor(AnalyzeRequest analyzeRequest) throws UnsupportedFileTypeException {
+    public FileExtractor getExtractor(MultipartFile logFile ) throws UnsupportedFileTypeException {
 
         for (FileExtractor extractor : extractors) {
-            if (extractor.supports(analyzeRequest)) {
+            if (extractor.supports(logFile)) {
                 return extractor;
             }
 
