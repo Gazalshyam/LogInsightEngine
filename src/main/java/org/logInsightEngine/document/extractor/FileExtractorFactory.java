@@ -14,7 +14,7 @@ public class FileExtractorFactory {
         this.extractors = extractors;
     }
 
-    // currently supports .log, .gz. and .pdf
+    // currently supports .log, .gz, .txt, .img and .pdf
     public FileExtractor getExtractor(MultipartFile logFile) throws UnsupportedFileTypeException {
 
         for (FileExtractor extractor : extractors) {
@@ -23,6 +23,6 @@ public class FileExtractorFactory {
             }
 
         }
-        throw new UnsupportedFileTypeException("Unsupported file type found");
+        throw new UnsupportedFileTypeException("File type not supported: " + logFile.getOriginalFilename());
     }
 }

@@ -9,6 +9,5 @@ management:
     web:
       exposure:
         include: health
-  ocr:
-    tesseract:
-      path: /usr/share/tesseract-ocr/4.00/tessdata/
+ocr:
+  tessdata-path: /usr/share/tesseract-ocr/4.00/tessdata/

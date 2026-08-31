@@ -22,7 +22,7 @@ public class ImageFileExtractor implements FileExtractor {
             return false;
         }
 
-        return multipartFile.getOriginalFilename().toLowerCase().endsWith(".png");
+        return multipartFile.getOriginalFilename().toLowerCase().endsWith(".png") || multipartFile.getOriginalFilename().toLowerCase().endsWith(".jpg") || multipartFile.getOriginalFilename().toLowerCase().endsWith(".jpeg");
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,13 +23,17 @@ public class SpringBootLogParser extends AbstractLogParser {
                     "(?<message>.*)$");
 
     @Override
-    public boolean supports(String line) {
-        return LOG_HEADER_PATTERN.matcher(line).matches();
+    public boolean supports(List<String> nonEmptyLines) {
+        if (nonEmptyLines.isEmpty()) {
+            return false;
+        }
+        long matchingLines = nonEmptyLines.stream().filter(line -> LOG_HEADER_PATTERN.matcher(line).matches()).count();
+        return matchingLines >= 1;
     }
 
     @Override
     protected boolean isStartOfLogEntry(String line) {
-        return supports(line);
+        return LOG_HEADER_PATTERN.matcher(line).matches();
     }
 
 
@@ -46,7 +51,11 @@ public class SpringBootLogParser extends AbstractLogParser {
             return null;
         }
         LogEntry entry = LogEntry.builder().build();
-        entry.setTimestamp(parseTimestamp(matcher.group("timestamp")));
+        Instant timestamp = parseTimestamp(matcher.group("timestamp"));
+        if (timestamp == null) {
+            return null;
+        }
+        entry.setTimestamp(timestamp);
         entry.setLevel(parseLogLevel(matcher.group("level")));
         entry.setLogger(matcher.group("logger"));
         entry.setThread(matcher.group("thread"));

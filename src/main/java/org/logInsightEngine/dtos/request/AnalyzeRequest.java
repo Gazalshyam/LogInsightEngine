@@ -13,6 +13,4 @@ import org.springframework.web.multipart.MultipartFile;
 public class AnalyzeRequest {
     private String logData;
     private MultipartFile logFile;
-
-
 }

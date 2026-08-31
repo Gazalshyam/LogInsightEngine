@@ -6,7 +6,7 @@ import org.logInsightEngine.model.domain.LogEntry;
 import java.util.List;
 
 public interface LogParser {
-    boolean supports(String message);
+    boolean supports(List<String> nonEmptyLines);
 
     List<LogEntry> parse(ExtractedDocument extractedDocument);
 }

@@ -24,8 +24,6 @@ public class PdfFileExtractor implements FileExtractor {
         try (PDDocument document = Loader.loadPDF(multipartFile.getBytes())) {
             String content = new org.apache.pdfbox.text.PDFTextStripper().getText(document);
             return ExtractedDocument.builder().content(content).documentType(DocumentType.PDF).fileName(multipartFile.getOriginalFilename()).lineCount(content.lines().count()).size(multipartFile.getSize()).build();
-        } catch (IOException e) {
-            throw e;
         }
     }
 

@@ -20,8 +20,8 @@ public class AnalyzeController {
     //endpoint to submit log data for analysis
     @PostMapping(value = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnalyzeResponse> analyze(@ModelAttribute AnalyzeRequest analyzeRequest) {
-        AnalyzeResponse analyzeResponse = analysisService.submitAnalysis(analyzeRequest);
-        return ResponseEntity.ok(analyzeResponse);
+        AnalyzeResponse analyzeResponses = analysisService.submitAnalysis(analyzeRequest);
+        return ResponseEntity.ok(analyzeResponses);
     }
 
     //endpoint to get analysis result by ID

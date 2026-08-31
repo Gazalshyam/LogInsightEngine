@@ -3,11 +3,14 @@ package org.logInsightEngine.document.ocr;
 import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import org.logInsightEngine.exception.OcrProcessingException;
+import org.logInsightEngine.exception.UnsupportedFileTypeException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
 
 
 @Slf4j
@@ -21,18 +24,17 @@ public class OcrExtractor {
         ImageIO.scanForPlugins();
     }
 
-    public String extractText(MultipartFile multipartFile) {
+    public String extractText(MultipartFile multipartFile) throws IOException {
         //convert MultipartFile to File
         File file = null;
         try {
             String contentType = multipartFile.getContentType();
             String suffix = ".tmp";
-            if (multipartFile.getOriginalFilename() != null &&
-                    multipartFile.getOriginalFilename().contains(".")) {
+            if (multipartFile.getOriginalFilename() != null && multipartFile.getOriginalFilename().contains(".")) {
                 suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
             }
             if ("image/webp".equalsIgnoreCase(contentType)) {
-                throw new RuntimeException("WEBP images are not supported for OCR. Please upload PNG or JPG.");
+                throw new UnsupportedFileTypeException("Please upload a PNG or JPG file. The file type is not supported " + multipartFile.getOriginalFilename());
             }
 
             file = File.createTempFile("ocr-", suffix);
@@ -45,13 +47,9 @@ public class OcrExtractor {
                 String fileData = tesseract.doOCR(file);
                 return fileData;
             } catch (TesseractException e) {
-                log.error("Error while   performing OCR on the file: {}", multipartFile.getOriginalFilename(), e);
-                return null;
+                throw new OcrProcessingException("Error while extracting information from the file: " + multipartFile.getOriginalFilename(), e);
 
             }
-        } catch (Exception e) {
-            log.error("Unexpected error occurred while processing the file: {}", multipartFile.getOriginalFilename(), e);
-            return null;
         } finally {
             //delete the temp file
             if (file != null && file.exists()) {

@@ -120,6 +120,7 @@ class SpringBootLogParserTest {
         assertFalse(entry.getMessage().contains("Caused by"));
         assertNotNull(entry.getTimestamp());
         assertNotNull(entry.getStackTrace());
+        assertFalse(entry.getStackTrace().contains("Failed to parse uploaded log file"));
         assertTrue(entry.getStackTrace().contains("java.lang.NullPointerException"));
         assertTrue(entry.getStackTrace().contains("IllegalArgumentException"));
         assertTrue(entry.getStackTrace().contains("Caused by"));
@@ -131,9 +132,18 @@ class SpringBootLogParserTest {
     public void shouldParseMultiLineLogs() throws IOException {
         ExtractedDocument document = TestUtils.loadDocument("logs/multiline/valid-multiline.log");
         List<LogEntry> entries = parser.parse(document);
-        assertEquals(2, entries.size());
+        assertEquals(3, entries.size());
         testInfoLog(entries, 0);
-        testErrorLog(entries, 1);
+        LogEntry entry = entries.get(1);
+        assertEquals(LogLevel.ERROR, entry.getLevel());
+        assertEquals("http-nio-8080-exec-8", entry.getThread());
+        assertEquals("classOne", entry.getLogger());
+        assertEquals("Index out of range\n" +
+                        "Processing uploaded document\n" +
+                        "Validating document metadata\n" +
+                        "Document validation completed successfully", entry.getMessage());
+        assertNotNull(entry.getTimestamp());
+        testErrorLog(entries, 2);
     }
 
     @Test
@@ -171,7 +181,7 @@ class SpringBootLogParserTest {
     }
 
     @Test
-    public void shouldSkipMalformedLogs() throws IOException {
+    public void shouldIgnoreMalformedLogHeaders() throws IOException {
         ExtractedDocument document = TestUtils.loadDocument("logs/multiline/malformed/invalid-multiline-logs.log");
         List<LogEntry> entries = parser.parse(document);
         assertEquals(3, entries.size());
@@ -217,5 +227,36 @@ class SpringBootLogParserTest {
         List<LogEntry> entries = parser.parse(document);
         assertEquals(0, entries.size());
     }
+    @Test
+    public  void shouldSkipInvalidTimestamp() throws IOException {
+        ExtractedDocument document = TestUtils.loadDocument("logs/timestamp/invalid-iso-format.log");
+        List<LogEntry> entries = parser.parse(document);
+        assertEquals(0, entries.size());
+    }
+    @Test
+    public void shouldProcessValidTimestamp() throws IOException {
+        ExtractedDocument document = TestUtils.loadDocument("logs/timestamp/valid-iso-format.log");
+        List<LogEntry> entries = parser.parse(document);
+        assertEquals(1, entries.size());
+        testDebugLog(entries, 0);
+    }
+    @Test
+    public void shouldSkipInvalidTimestampAndParseValidEntries() throws IOException {
+        ExtractedDocument document = TestUtils.loadDocument("logs/timestamp/multiline-valid-invalid-iso-format.log");
+        List<LogEntry> entries = parser.parse(document);
+        assertEquals(2, entries.size());
+        testDebugLog(entries, 0);
+        testDebugLog(entries, 1);
+    }
+
+    @Test
+    public void shouldSkipInvalidTimestampAndContinueParsing() throws IOException {
+        ExtractedDocument document = TestUtils.loadDocument("logs/timestamp/invalid-continuation-line.log");
+        List<LogEntry> entries = parser.parse(document);
+        assertEquals(2, entries.size());
+        testInfoLog(entries, 0);
+        testInfoLog(entries, 1);
+    }
+
 
 }

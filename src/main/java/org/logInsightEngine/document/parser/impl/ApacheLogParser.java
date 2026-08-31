@@ -4,10 +4,12 @@ import org.logInsightEngine.document.parser.AbstractLogParser;
 import org.logInsightEngine.model.domain.LogEntry;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ApacheLogParser extends AbstractLogParser {
     @Override
-    public boolean supports(String message) {
+    public boolean supports(List<String> nonEmptyLines) {
         // Implementation for checking if the message is a Spring Boot log
         return false;
     }

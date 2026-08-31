@@ -1,62 +1,66 @@
 package org.logInsightEngine.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.logInsightEngine.document.extractor.FileExtractor;
-import org.logInsightEngine.document.extractor.FileExtractorFactory;
-import org.logInsightEngine.document.parser.LogParser;
-import org.logInsightEngine.document.parser.LogParserFactory;
 import org.logInsightEngine.dtos.request.AnalyzeRequest;
 import org.logInsightEngine.dtos.response.AnalyzeResponse;
-import org.logInsightEngine.model.domain.DocumentType;
-import org.logInsightEngine.model.domain.ExtractedDocument;
+import org.logInsightEngine.model.domain.AnalysisStatus;
 import org.logInsightEngine.model.domain.LogEntry;
-
-import org.springframework.http.HttpStatus;
+import org.logInsightEngine.model.domain.SourceType;
+import org.logInsightEngine.result.SourceProcessingResult;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class AnalysisService {
+    private final SourceProcessingService sourceProcessingService;
 
-    private final FileExtractorFactory fileExtractorFactory;
-    private final LogParserFactory logParserFactory;
-
-    public AnalysisService(FileExtractorFactory fileExtractorFactory, LogParserFactory logParserFactory) {
-        this.fileExtractorFactory = fileExtractorFactory;
-        this.logParserFactory = logParserFactory;
+    public AnalysisService(SourceProcessingService sourceProcessingService) {
+        this.sourceProcessingService = sourceProcessingService;
     }
 
     public AnalyzeResponse submitAnalysis(AnalyzeRequest analyzeRequest) {
         // Placeholder for analysis submission logic
-        try {
-            AnalyzeResponse analyzeResponse = new AnalyzeResponse();
-            analyzeResponse.setStatus("success");
-            analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
-            ExtractedDocument extractedDocument = null;
-            if (analyzeRequest.getLogFile() != null) {
-                FileExtractor extractor = fileExtractorFactory.getExtractor(analyzeRequest.getLogFile());
-                extractedDocument = extractor.extract(analyzeRequest.getLogFile());
-            } else if (analyzeRequest.getLogData() != null) {
-                extractedDocument = ExtractedDocument.builder().content(analyzeRequest.getLogData()).fileName("raw_text" + System.currentTimeMillis()).documentType(DocumentType.RAW_TEXT).size(analyzeRequest.getLogData().getBytes(StandardCharsets.UTF_8).length).lineCount(analyzeRequest.getLogData().lines().count()).build();
-            }
-            LogParser logParser = logParserFactory.getParser(extractedDocument.getContent());
-            List<LogEntry> parsedLogEntries = logParser.parse(extractedDocument);
-            return analyzeResponse;
-        } catch (Exception e) {
-            log.error("Error while processing analysis request", e);
-            return new AnalyzeResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
-        }
-    }
+        List<LogEntry> parsedLogEntries = new ArrayList<>();
+        List<SourceProcessingResult> sourceProcessingResults = sourceProcessingService.processRequest(analyzeRequest);
+        int sourcesSucceeded = 0;
+        int sourcesAttempted = sourceProcessingResults.size();
+        AnalyzeResponse analyzeResponse = new AnalyzeResponse();
+        analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
 
+        for (SourceProcessingResult result : sourceProcessingResults) {
+            if (result.isSuccess()) {
+                sourcesSucceeded++;
+                parsedLogEntries.addAll(result.getLogEntries());
+            } else {
+                if (result.getSourceType().equals(SourceType.LOG_FILE)) {
+                    log.info("Error received at log file source.");
+                    analyzeResponse.setLogFileError(result.getErrorMessage());
+                    analyzeResponse.setLogFileErrorType(result.getErrorType());
+                } else if (result.getSourceType().equals(SourceType.LOG_DATA)) {
+                    log.info("Error received at log data source.");
+                    analyzeResponse.setLogDataErrorType(result.getErrorType());
+                    analyzeResponse.setLogDataError(result.getErrorMessage());
+                }
+            }
+        }
+        if (sourcesSucceeded == sourcesAttempted && sourcesAttempted > 0) {
+            analyzeResponse.setStatus(AnalysisStatus.SUCCESS);
+        } else if (sourcesSucceeded == 0 || sourcesAttempted == 0) {
+            analyzeResponse.setStatus(AnalysisStatus.FAILED);
+        } else {
+            analyzeResponse.setStatus(AnalysisStatus.PARTIAL_SUCCESS);
+        }
+        return analyzeResponse;
+    }
 
     public AnalyzeResponse getAnalysisResult(String id) {
         // Placeholder for retrieving analysis result
         AnalyzeResponse analyzeResponse = new AnalyzeResponse();
-        analyzeResponse.setStatus("success");
+        analyzeResponse.setStatus(AnalysisStatus.SUCCESS);
         analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
         return analyzeResponse;
     }
