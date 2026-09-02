@@ -2,11 +2,12 @@ package org.logInsightEngine.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.logInsightEngine.dtos.request.AnalyzeRequest;
-import org.logInsightEngine.dtos.response.AnalyzeResponse;
+import org.logInsightEngine.dtos.result.AnalysisResult;
+import org.logInsightEngine.dtos.result.AnalysisExecutionResult;
 import org.logInsightEngine.model.domain.AnalysisStatus;
 import org.logInsightEngine.model.domain.LogEntry;
 import org.logInsightEngine.model.domain.SourceType;
-import org.logInsightEngine.result.SourceProcessingResult;
+import org.logInsightEngine.dtos.result.SourceProcessingResult;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,13 +23,13 @@ public class AnalysisService {
         this.sourceProcessingService = sourceProcessingService;
     }
 
-    public AnalyzeResponse submitAnalysis(AnalyzeRequest analyzeRequest) {
+    public AnalysisResult submitAnalysis(AnalyzeRequest analyzeRequest) {
         // Placeholder for analysis submission logic
         List<LogEntry> parsedLogEntries = new ArrayList<>();
         List<SourceProcessingResult> sourceProcessingResults = sourceProcessingService.processRequest(analyzeRequest);
         int sourcesSucceeded = 0;
         int sourcesAttempted = sourceProcessingResults.size();
-        AnalyzeResponse analyzeResponse = new AnalyzeResponse();
+        AnalysisExecutionResult analyzeResponse = new AnalysisExecutionResult();
         analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
 
         for (SourceProcessingResult result : sourceProcessingResults) {
@@ -54,14 +55,16 @@ public class AnalysisService {
         } else {
             analyzeResponse.setStatus(AnalysisStatus.PARTIAL_SUCCESS);
         }
-        return analyzeResponse;
+        AnalysisResult analysisResult = new AnalysisResult();
+        
+        return analysisResult;
     }
 
-    public AnalyzeResponse getAnalysisResult(String id) {
+    public AnalysisResult getAnalysisResult(String id) {
         // Placeholder for retrieving analysis result
-        AnalyzeResponse analyzeResponse = new AnalyzeResponse();
-        analyzeResponse.setStatus(AnalysisStatus.SUCCESS);
-        analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
+        AnalysisResult analyzeResponse = new AnalysisResult();
+//        analyzeResponse.setStatus(AnalysisStatus.SUCCESS);
+//        analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
         return analyzeResponse;
     }
 }

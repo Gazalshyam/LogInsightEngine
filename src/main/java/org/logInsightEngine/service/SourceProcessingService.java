@@ -11,7 +11,7 @@ import org.logInsightEngine.model.domain.DocumentType;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 import org.logInsightEngine.model.domain.LogEntry;
 import org.logInsightEngine.model.domain.SourceType;
-import org.logInsightEngine.result.SourceProcessingResult;
+import org.logInsightEngine.dtos.result.SourceProcessingResult;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

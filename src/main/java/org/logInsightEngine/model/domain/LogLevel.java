@@ -1,5 +1,7 @@
 package org.logInsightEngine.model.domain;
 
+import java.util.EnumMap;
+
 public enum LogLevel {
     DEBUG,
     INFO,
@@ -8,5 +10,5 @@ public enum LogLevel {
     TRACE,
     ALL,
     FATAL,
-    UNKNOWN
+    UNKNOWN;
 }

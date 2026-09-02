@@ -1,4 +1,4 @@
-package org.logInsightEngine.result;
+package org.logInsightEngine.dtos.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
