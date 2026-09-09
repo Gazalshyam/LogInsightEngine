@@ -13,5 +13,4 @@ import java.util.List;
 @Builder
 public class ErrorAnalysisResult {
     private List<ErrorGroup> errorGroups;
-    private List<Finding> findings;
 }

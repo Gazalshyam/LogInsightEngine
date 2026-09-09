@@ -29,4 +29,11 @@ public class ErrorGroup {
     private Instant lastOccurrence;
 
     private Impact impact;
+
+    public ErrorGroup(String fingerprint, String exceptionType, String message, String id) {
+        this.fingerprint = fingerprint;
+        this.exceptionType = exceptionType;
+        this.message = message;
+        this.id = id;
+    }
 }

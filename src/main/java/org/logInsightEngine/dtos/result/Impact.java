@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -19,4 +20,12 @@ public class Impact {
     private Set<String> loggers;
 
     private Set<String> services;
+
+    public static Impact createImpact() {
+        Impact impact = new Impact();
+        impact.setThreads(new HashSet<>());
+        impact.setLoggers(new HashSet<>());
+        impact.setServices(new HashSet<>());
+        return impact;
+    }
 }

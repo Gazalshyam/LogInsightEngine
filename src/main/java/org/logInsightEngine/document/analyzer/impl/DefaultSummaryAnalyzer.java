@@ -46,6 +46,6 @@ public class DefaultSummaryAnalyzer implements SummaryAnalyzer {
         // calculate latest timestamp
         summary.setLastTimestamp(lastTimestamp);
         // calculate duration
-        summary.setDuration(timestamps.isEmpty()? Duration.ZERO : Duration.between(firstTimestamp, lastTimestamp));
+        summary.setDuration(timestamps.isEmpty() ? Duration.ZERO : Duration.between(firstTimestamp, lastTimestamp));
     }
 }

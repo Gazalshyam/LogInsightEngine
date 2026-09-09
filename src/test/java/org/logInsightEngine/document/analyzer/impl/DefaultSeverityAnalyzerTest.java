@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DefaultSeverityAnalyzerTest {
     private final DefaultSeverityAnalyzer severityAnalyzer = new DefaultSeverityAnalyzer();
+
     @Test
     public void testMixedLogLevels() {
         // Implement test logic for mixed log levels
@@ -24,7 +25,7 @@ public class DefaultSeverityAnalyzerTest {
         logEntries.add(new LogEntry(Instant.now(), LogLevel.INFO, "com.org.extractor", "main", "Second log entry for info", null));
         logEntries.add(new LogEntry(Instant.now(), LogLevel.DEBUG, "com.org.extractor", "main", "First log entry for debug", null));
 
-        SeverityStatistics severityStatistics =  severityAnalyzer.analyze(logEntries);
+        SeverityStatistics severityStatistics = severityAnalyzer.analyze(logEntries);
         assertEquals(5, severityStatistics.getCountByLevel().values().stream().mapToLong(Long::longValue).sum());
         assertEquals(2, severityStatistics.getCountByLevel().get(LogLevel.INFO));
         assertEquals(1, severityStatistics.getCountByLevel().get(LogLevel.ERROR));
@@ -39,7 +40,7 @@ public class DefaultSeverityAnalyzerTest {
         logEntries.add(new LogEntry(Instant.now(), LogLevel.INFO, "com.org.extractor", "main", "First log entry for info", null));
         logEntries.add(new LogEntry(Instant.now(), LogLevel.INFO, "com.org.extractor", "main", "Second log entry for info", null));
 
-        SeverityStatistics severityStatistics =  severityAnalyzer.analyze(logEntries);
+        SeverityStatistics severityStatistics = severityAnalyzer.analyze(logEntries);
         assertEquals(2, severityStatistics.getCountByLevel().values().stream().mapToLong(Long::longValue).sum());
         assertEquals(2, severityStatistics.getCountByLevel().get(LogLevel.INFO));
     }
@@ -51,10 +52,11 @@ public class DefaultSeverityAnalyzerTest {
         logEntries.add(new LogEntry(Instant.now(), null, "com.org.extractor", "main", "First log entry with no level", null));
         logEntries.add(new LogEntry(Instant.now(), null, "com.org.extractor", "main", "Second log entry with no level", null));
 
-        SeverityStatistics severityStatistics =  severityAnalyzer.analyze(logEntries);
+        SeverityStatistics severityStatistics = severityAnalyzer.analyze(logEntries);
         assertEquals(2, severityStatistics.getCountByLevel().values().stream().mapToLong(Long::longValue).sum());
         assertEquals(2, severityStatistics.getCountByLevel().get(LogLevel.UNKNOWN));
     }
+
     @Test
     public void shouldHandleEmptyLogEntries() {
         SeverityStatistics result =
@@ -64,10 +66,11 @@ public class DefaultSeverityAnalyzerTest {
             assertEquals(0L, result.getCountByLevel().get(level));
         }
     }
+
     @Test
     public void shouldRejectNullLogEntries() {
         // Implement test logic for no entries
-        NullPointerException exception = assertThrows(NullPointerException.class,() -> severityAnalyzer.analyze(null));
-        assertEquals( "Log entries cannot be null", exception.getMessage());
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> severityAnalyzer.analyze(null));
+        assertEquals("Log entries cannot be null", exception.getMessage());
     }
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
 
 
 @Data
@@ -31,4 +32,5 @@ public class Finding {
     private Instant lastOccurrence;
 
     private Impact impact;
+    private List<String> relatedErrorGroupIds;
 }

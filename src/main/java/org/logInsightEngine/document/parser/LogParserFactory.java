@@ -8,8 +8,8 @@ import java.util.List;
 
 @Component
 public class LogParserFactory {
-    private final List<LogParser> parsers;
     private static final int MAX_DETECTION_LINES = 20;
+    private final List<LogParser> parsers;
 
     public LogParserFactory(List<LogParser> parsers) {
         this.parsers = parsers;

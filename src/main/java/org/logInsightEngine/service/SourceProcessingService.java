@@ -5,13 +5,13 @@ import org.logInsightEngine.document.extractor.FileExtractorFactory;
 import org.logInsightEngine.document.parser.LogParser;
 import org.logInsightEngine.document.parser.LogParserFactory;
 import org.logInsightEngine.dtos.request.AnalyzeRequest;
+import org.logInsightEngine.dtos.result.SourceProcessingResult;
 import org.logInsightEngine.exception.FileProcessingException;
 import org.logInsightEngine.exception.UnsupportedLogFormatException;
 import org.logInsightEngine.model.domain.DocumentType;
 import org.logInsightEngine.model.domain.ExtractedDocument;
 import org.logInsightEngine.model.domain.LogEntry;
 import org.logInsightEngine.model.domain.SourceType;
-import org.logInsightEngine.dtos.result.SourceProcessingResult;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

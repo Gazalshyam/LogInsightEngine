@@ -4,12 +4,14 @@ import org.logInsightEngine.document.analyzer.SeverityAnalyzer;
 import org.logInsightEngine.dtos.result.SeverityStatistics;
 import org.logInsightEngine.model.domain.LogEntry;
 import org.logInsightEngine.model.domain.LogLevel;
+import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@Component
 public class DefaultSeverityAnalyzer implements SeverityAnalyzer {
     @Override
     public SeverityStatistics analyze(List<LogEntry> logEntries) {
@@ -21,7 +23,8 @@ public class DefaultSeverityAnalyzer implements SeverityAnalyzer {
         }
         for (LogEntry logEntry : logEntries) {
             // Analyze each log entry and update severity statistics
-            LogLevel level = logEntry.getLevel()== null? LogLevel.UNKNOWN : logEntry.getLevel();
+            Objects.requireNonNull(logEntry, "Log entry cannot be null");
+            LogLevel level = logEntry.getLevel() == null ? LogLevel.UNKNOWN : logEntry.getLevel();
             countByLevel.put(level, countByLevel.get(level) + 1);
         }
         return SeverityStatistics.builder().countByLevel(countByLevel).build();

@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultSummaryAnalyzerTest {
     private final DefaultSummaryAnalyzer summaryAnalyzer = new DefaultSummaryAnalyzer();
+
     @Test
     public void analyzeEntriesWithTimestamps() {
         List<LogEntry> logEntries = new ArrayList<>();
@@ -26,7 +27,7 @@ public class DefaultSummaryAnalyzerTest {
         logEntries.add(new LogEntry(timestamp3, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
         logEntries.add(new LogEntry(timestamp4, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
 
-        Summary summary  = summaryAnalyzer.analyze(logEntries);
+        Summary summary = summaryAnalyzer.analyze(logEntries);
         assertEquals(4, summary.getTotalLogEntries());
         assertNotNull(summary.getFirstTimestamp());
         assertNotNull(summary.getLastTimestamp());
@@ -47,7 +48,7 @@ public class DefaultSummaryAnalyzerTest {
         logEntries.add(new LogEntry(timestamp2, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
         logEntries.add(new LogEntry(timestamp3, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
 
-        Summary summary  = summaryAnalyzer.analyze(logEntries);
+        Summary summary = summaryAnalyzer.analyze(logEntries);
         assertEquals(4, summary.getTotalLogEntries());
         assertNotNull(summary.getFirstTimestamp());
         assertNotNull(summary.getLastTimestamp());
@@ -69,7 +70,7 @@ public class DefaultSummaryAnalyzerTest {
         logEntries.add(new LogEntry(timestamp2, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
         logEntries.add(new LogEntry(timestamp4, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
 
-        Summary summary  = summaryAnalyzer.analyze(logEntries);
+        Summary summary = summaryAnalyzer.analyze(logEntries);
         assertEquals(4, summary.getTotalLogEntries());
         assertNotNull(summary.getFirstTimestamp());
         assertNotNull(summary.getLastTimestamp());
@@ -89,7 +90,7 @@ public class DefaultSummaryAnalyzerTest {
         logEntries.add(new LogEntry(null, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
         logEntries.add(new LogEntry(timestamp4, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
 
-        Summary summary  = summaryAnalyzer.analyze(logEntries);
+        Summary summary = summaryAnalyzer.analyze(logEntries);
         assertEquals(4, summary.getTotalLogEntries());
         assertNotNull(summary.getFirstTimestamp());
         assertNotNull(summary.getLastTimestamp());
@@ -100,32 +101,33 @@ public class DefaultSummaryAnalyzerTest {
     }
 
     @Test
-    public void shouldHandleEntriesWithOnlyNullTimestamps(){
+    public void shouldHandleEntriesWithOnlyNullTimestamps() {
         List<LogEntry> logEntries = new ArrayList<>();
         logEntries.add(new LogEntry(null, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
         logEntries.add(new LogEntry(null, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
         logEntries.add(new LogEntry(null, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
         logEntries.add(new LogEntry(null, LogLevel.INFO, "com.org.extractor", "main", "First log entry", null));
 
-        Summary summary  = summaryAnalyzer.analyze(logEntries);
+        Summary summary = summaryAnalyzer.analyze(logEntries);
         assertEquals(4, summary.getTotalLogEntries());
         assertNull(summary.getFirstTimestamp());
         assertNull(summary.getLastTimestamp());
-        assertEquals(Duration.ZERO,summary.getDuration());
+        assertEquals(Duration.ZERO, summary.getDuration());
     }
 
     @Test
     public void shouldHandleEmptyLogEntries() {
         List<LogEntry> logEntries = new ArrayList<>();
-        Summary summary  = summaryAnalyzer.analyze(logEntries);
+        Summary summary = summaryAnalyzer.analyze(logEntries);
         assertEquals(0, summary.getTotalLogEntries());
         assertNull(summary.getFirstTimestamp());
         assertNull(summary.getLastTimestamp());
-        assertEquals(Duration.ZERO,summary.getDuration());
+        assertEquals(Duration.ZERO, summary.getDuration());
     }
+
     @Test
     public void shouldRejectNullLogEntries() {
-        NullPointerException exception = assertThrows(NullPointerException.class,() -> summaryAnalyzer.analyze(null));
-        assertEquals( "Log entries cannot be null", exception.getMessage());
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> summaryAnalyzer.analyze(null));
+        assertEquals("Log entries cannot be null", exception.getMessage());
     }
 }

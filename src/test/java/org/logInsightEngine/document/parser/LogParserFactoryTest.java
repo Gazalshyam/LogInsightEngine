@@ -46,6 +46,7 @@ public class LogParserFactoryTest {
         LogParser parser = logParserFactory.getParser(springBootLog);
         assert parser instanceof SpringBootLogParser;
     }
+
     @Test
     public void testParserWithSpringBootLogsLessThan20() {
 

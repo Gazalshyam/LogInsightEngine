@@ -1,5 +1,6 @@
 package org.logInsightEngine.document.parser.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.logInsightEngine.TestUtils;
 import org.logInsightEngine.model.domain.ExtractedDocument;
@@ -11,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@Slf4j
 class SpringBootLogParserTest {
     private final SpringBootLogParser parser = new SpringBootLogParser();
 
@@ -139,9 +140,9 @@ class SpringBootLogParserTest {
         assertEquals("http-nio-8080-exec-8", entry.getThread());
         assertEquals("classOne", entry.getLogger());
         assertEquals("Index out of range\n" +
-                        "Processing uploaded document\n" +
-                        "Validating document metadata\n" +
-                        "Document validation completed successfully", entry.getMessage());
+                "Processing uploaded document\n" +
+                "Validating document metadata\n" +
+                "Document validation completed successfully", entry.getMessage());
         assertNotNull(entry.getTimestamp());
         testErrorLog(entries, 2);
     }
@@ -227,12 +228,14 @@ class SpringBootLogParserTest {
         List<LogEntry> entries = parser.parse(document);
         assertEquals(0, entries.size());
     }
+
     @Test
-    public  void shouldSkipInvalidTimestamp() throws IOException {
+    public void shouldSkipInvalidTimestamp() throws IOException {
         ExtractedDocument document = TestUtils.loadDocument("logs/timestamp/invalid-iso-format.log");
         List<LogEntry> entries = parser.parse(document);
         assertEquals(0, entries.size());
     }
+
     @Test
     public void shouldProcessValidTimestamp() throws IOException {
         ExtractedDocument document = TestUtils.loadDocument("logs/timestamp/valid-iso-format.log");
@@ -240,6 +243,7 @@ class SpringBootLogParserTest {
         assertEquals(1, entries.size());
         testDebugLog(entries, 0);
     }
+
     @Test
     public void shouldSkipInvalidTimestampAndParseValidEntries() throws IOException {
         ExtractedDocument document = TestUtils.loadDocument("logs/timestamp/multiline-valid-invalid-iso-format.log");

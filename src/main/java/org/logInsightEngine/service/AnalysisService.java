@@ -1,13 +1,15 @@
 package org.logInsightEngine.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.logInsightEngine.document.analyzer.LogAnalyzer;
 import org.logInsightEngine.dtos.request.AnalyzeRequest;
-import org.logInsightEngine.dtos.result.AnalysisResult;
 import org.logInsightEngine.dtos.result.AnalysisExecutionResult;
+import org.logInsightEngine.dtos.result.AnalysisResult;
+import org.logInsightEngine.dtos.result.SourceProcessingResult;
 import org.logInsightEngine.model.domain.AnalysisStatus;
 import org.logInsightEngine.model.domain.LogEntry;
 import org.logInsightEngine.model.domain.SourceType;
-import org.logInsightEngine.dtos.result.SourceProcessingResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.UUID;
 @Service
 public class AnalysisService {
     private final SourceProcessingService sourceProcessingService;
+    @Autowired
+    LogAnalyzer logAnalyzer;
 
     public AnalysisService(SourceProcessingService sourceProcessingService) {
         this.sourceProcessingService = sourceProcessingService;
@@ -55,9 +59,8 @@ public class AnalysisService {
         } else {
             analyzeResponse.setStatus(AnalysisStatus.PARTIAL_SUCCESS);
         }
-        AnalysisResult analysisResult = new AnalysisResult();
-        
-        return analysisResult;
+
+        return logAnalyzer.analyze(parsedLogEntries);
     }
 
     public AnalysisResult getAnalysisResult(String id) {
