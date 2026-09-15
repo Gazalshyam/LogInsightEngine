@@ -14,11 +14,11 @@ import java.time.Duration;
 @Builder
 public class Correlation {
     private String id;
+    private String targetId;
+    private CorrelationEntityType targetType;
     private String sourceId;
     private CorrelationEntityType sourceType;
-    private String relatedId;
-    private CorrelationEntityType relatedType;
     private CorrelationType relationshipType;
     private Duration timeDifference;
-    private double confidence;
+//    private double confidence;// wil be used later in v2
 }
