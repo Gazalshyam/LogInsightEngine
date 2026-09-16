@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class SourceProcessingService {
@@ -31,6 +32,7 @@ public class SourceProcessingService {
     }
 
     public List<SourceProcessingResult> processRequest(AnalyzeRequest analyzeRequest) {
+        Objects.requireNonNull(analyzeRequest);
         List<SourceProcessingResult> results = new ArrayList<>();
         if (analyzeRequest.getLogFile() != null && !analyzeRequest.getLogFile().isEmpty()) {
             SourceProcessingResult resultLogFile = processLogFile(analyzeRequest);

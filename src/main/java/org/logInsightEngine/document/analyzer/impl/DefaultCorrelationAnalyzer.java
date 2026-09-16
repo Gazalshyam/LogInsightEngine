@@ -12,23 +12,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static java.lang.Math.abs;
-
 @Component
 public class DefaultCorrelationAnalyzer implements CorrelationAnalyzer {
     private static final Duration CORRELATION_WINDOW = Duration.ofSeconds(30);
+
     @Override
-    public List<Correlation> analyze(ErrorAnalysisResult errorAnalysisResult){
+    public List<Correlation> analyze(ErrorAnalysisResult errorAnalysisResult) {
         List<Correlation> correlations = new ArrayList<>();
         List<ErrorGroup> errorGroups = errorAnalysisResult.getErrorGroups();
 
         Objects.requireNonNull(errorGroups, "Require non null errorGroups");
-        for(int i = 0; i < errorGroups.size(); i++){
+        for (int i = 0; i < errorGroups.size(); i++) {
             ErrorGroup source = errorGroups.get(i);
-            for (int j = i+1;j< errorGroups.size(); j++){
+            for (int j = i + 1; j < errorGroups.size(); j++) {
                 ErrorGroup related = errorGroups.get(j);
                 CorrelationType relationType = getRelationType(source, related);
-                if(relationType != null){
+                if (relationType != null) {
                     correlations.add(createCorrelation(source, related, relationType));
                 }
 
@@ -37,31 +36,38 @@ public class DefaultCorrelationAnalyzer implements CorrelationAnalyzer {
         return correlations;
     }
 
-    private CorrelationType getRelationType(ErrorGroup source, ErrorGroup related){
-        boolean hasSharedThread = source.getImpact().getThreads() .stream() .anyMatch(related.getImpact().getThreads()::contains);
-        boolean hasSharedLogger = source.getImpact().getLoggers().stream().anyMatch(related.getImpact().getLoggers()::contains);
-        Duration timeDifference = getTimeDifference(source.getFirstOccurrence(), related.getFirstOccurrence()) ;
+    private CorrelationType getRelationType(ErrorGroup source, ErrorGroup related) {
+
+        boolean hasSharedThread = false;
+        if(source.getImpact() != null && source.getImpact().getThreads() != null){
+            hasSharedThread = source.getImpact().getThreads().stream().anyMatch(related.getImpact().getThreads()::contains);
+        }
+        boolean hasSharedLogger = false;
+        if(source.getImpact() != null && source.getImpact().getLoggers() != null){
+            hasSharedLogger = source.getImpact().getLoggers().stream().anyMatch(related.getImpact().getLoggers()::contains);
+        }
+        Duration timeDifference = getTimeDifference(source.getFirstOccurrence(), related.getFirstOccurrence());
         boolean hasSharedContext = hasSharedLogger || hasSharedThread;
-        boolean sourcePrecedesRelated =  timeDifference!= null &&  !timeDifference.isZero() && !timeDifference.isNegative() &&  timeDifference.compareTo(CORRELATION_WINDOW) <= 0 && timeDifference.compareTo(Duration.ZERO) > 0 ;
-        if(isSimilar(source, related)){
+        boolean sourcePrecedesRelated = timeDifference != null && !timeDifference.isZero() && !timeDifference.isNegative() && timeDifference.compareTo(CORRELATION_WINDOW) <= 0 && timeDifference.compareTo(Duration.ZERO) > 0;
+        if (isSimilar(source, related)) {
             return CorrelationType.SIMILAR;
         }
-        if(hasSharedContext && sourcePrecedesRelated && (source.getFirstOccurrence().isBefore(related.getFirstOccurrence()) || related.getFirstOccurrence().isBefore(source.getFirstOccurrence()))){
+        if (hasSharedContext && sourcePrecedesRelated ) {
             return CorrelationType.PRECEDES;
         }
-        if(isRelated(hasSharedContext, timeDifference)) {
-                return CorrelationType.RELATED_ERROR;
+        if (isRelated(hasSharedContext, timeDifference)) {
+            return CorrelationType.RELATED_ERROR;
         }
 
-        return  null;
+        return null;
     }
 
-    private Duration getTimeDifference (Instant sourceTime, Instant relatedTime){
-        if(sourceTime != null && relatedTime != null) {
-            if (sourceTime.isBefore( relatedTime))
+    private Duration getTimeDifference(Instant sourceTime, Instant relatedTime) {
+        if (sourceTime != null && relatedTime != null) {
+            if (sourceTime.isBefore(relatedTime))
                 return Duration.between(sourceTime, relatedTime);
             else
-                return  Duration.between(relatedTime, sourceTime);
+                return Duration.between(relatedTime, sourceTime);
         }
         return null;
     }
@@ -70,10 +76,10 @@ public class DefaultCorrelationAnalyzer implements CorrelationAnalyzer {
         Correlation correlation = new Correlation();
         correlation.setId(UUID.randomUUID().toString());
         correlation.setSourceType(CorrelationEntityType.ERROR_GROUP);
-        if(source.getFirstOccurrence().isBefore(target.getFirstOccurrence())) {
+        if (source.getFirstOccurrence().isBefore(target.getFirstOccurrence())) {
             correlation.setSourceId(source.getId());
             correlation.setTargetId(target.getId());
-        }else{
+        } else {
             correlation.setSourceId(target.getId());
             correlation.setTargetId(source.getId());
         }
@@ -82,6 +88,7 @@ public class DefaultCorrelationAnalyzer implements CorrelationAnalyzer {
         correlation.setTimeDifference(getTimeDifference(source.getFirstOccurrence(), target.getFirstOccurrence()));
         return correlation;
     }
+
     private boolean isSimilar(ErrorGroup source, ErrorGroup related) {
         if (source.getExceptionType() == null || related.getExceptionType() == null) {
             return false;
@@ -91,6 +98,6 @@ public class DefaultCorrelationAnalyzer implements CorrelationAnalyzer {
     }
 
     private boolean isRelated(boolean hasSharedContext, Duration timeDifference) {
-        return hasSharedContext  && timeDifference != null  && timeDifference.compareTo(CORRELATION_WINDOW) <= 0  && timeDifference.compareTo(Duration.ZERO) >= 0;
+        return hasSharedContext && timeDifference != null && timeDifference.compareTo(CORRELATION_WINDOW) <= 0 && timeDifference.compareTo(Duration.ZERO) >= 0;
     }
 }

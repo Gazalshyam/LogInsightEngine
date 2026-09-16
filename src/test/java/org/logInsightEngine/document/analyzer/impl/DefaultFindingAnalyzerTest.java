@@ -26,14 +26,14 @@ public class DefaultFindingAnalyzerTest {
     }
 
     @Test
-    public void testNullErrorGroupInsideList(){
+    public void testNullErrorGroupInsideList() {
         // Test with a list containing a null ErrorGroup
         List<ErrorGroup> errorGroups = new java.util.ArrayList<>();
         errorGroups.add(null);
         assertThrows(NullPointerException.class, () -> defaultFindingAnalyzer.analyze(errorGroups));
     }
 
-    private void setErrorGroupDetails(ErrorGroup errorGroup){
+    private void setErrorGroupDetails(ErrorGroup errorGroup) {
         Impact impact = Impact.createImpact();
         impact.setThreads(Set.of("thread-1"));
         impact.setLoggers(Set.of("com.example.MyClass"));
@@ -45,7 +45,7 @@ public class DefaultFindingAnalyzerTest {
         errorGroup.setId("error-group-1");
     }
 
-    private void assertFindingDetails(List<Finding> findings, ErrorGroup errorGroup){
+    private void assertFindingDetails(List<Finding> findings, ErrorGroup errorGroup) {
         assertEquals(findings.getFirst().getFirstOccurrence(), Instant.ofEpochMilli(1690000000000L)); // Since we didn't set timestamps in the ErrorGroup
         assertEquals(findings.getFirst().getLastOccurrence(), Instant.ofEpochMilli(1690000005000L)); // Since we didn't set timestamps in the ErrorGroup
         assertNotNull(findings.getFirst().getImpact()); // Impact should be initialized
@@ -220,7 +220,7 @@ public class DefaultFindingAnalyzerTest {
         errorGroup2.setMessage("ClientAbortException: Client disconnected");
         errorGroup2.setExceptionType("ClientAbortException");
         setErrorGroupDetails(errorGroup2);
-        assertThrows(NullPointerException.class, () -> defaultFindingAnalyzer.analyze( List.of(errorGroup1, null, errorGroup2)));
+        assertThrows(NullPointerException.class, () -> defaultFindingAnalyzer.analyze(List.of(errorGroup1, null, errorGroup2)));
 
     }
 }

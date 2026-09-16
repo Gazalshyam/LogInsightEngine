@@ -14,14 +14,10 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 public class TimelineEvent {
-
     private Instant timestamp;
-
     private LogLevel level;
-
     private String title;
-
     private String description;
-
     private String findingId;
+
 }

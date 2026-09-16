@@ -1,6 +1,5 @@
 package org.logInsightEngine.document.analyzer.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.logInsightEngine.dtos.result.ErrorAnalysisResult;
 import org.logInsightEngine.dtos.result.ErrorGroup;

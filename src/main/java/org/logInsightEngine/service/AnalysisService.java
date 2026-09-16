@@ -20,11 +20,11 @@ import java.util.UUID;
 @Service
 public class AnalysisService {
     private final SourceProcessingService sourceProcessingService;
-    @Autowired
-    LogAnalyzer logAnalyzer;
+    private final LogAnalyzer logAnalyzer;
 
-    public AnalysisService(SourceProcessingService sourceProcessingService) {
+    public AnalysisService(SourceProcessingService sourceProcessingService, LogAnalyzer logAnalyzer) {
         this.sourceProcessingService = sourceProcessingService;
+        this.logAnalyzer = logAnalyzer;
     }
 
     public AnalysisResult submitAnalysis(AnalyzeRequest analyzeRequest) {

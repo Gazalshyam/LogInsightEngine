@@ -16,13 +16,13 @@ import java.util.Objects;
 public class DefaultFindingAnalyzer implements FindingAnalyzer {
     @Override
     public List<Finding> analyze(List<ErrorGroup> errorGroups) {
-        Objects.requireNonNull(errorGroups,"errorGroups cannot be null");
+        Objects.requireNonNull(errorGroups, "errorGroups cannot be null");
         List<Finding> findings = new ArrayList<>();
-        if(errorGroups.isEmpty() ){
+        if (errorGroups.isEmpty()) {
             return findings;
         }
         for (ErrorGroup errorGroup : errorGroups) {
-            Objects.requireNonNull(errorGroup,"errorGroup cannot be null");
+            Objects.requireNonNull(errorGroup, "errorGroup cannot be null");
             Finding finding = createFinding(errorGroup);
             findings.add(finding);
         }
@@ -47,14 +47,15 @@ public class DefaultFindingAnalyzer implements FindingAnalyzer {
     }
 
     private boolean isDatabaseIssue(ErrorGroup errorGroup) {
-    String message = errorGroup.getMessage();
-    return (hasExceptionType(errorGroup,"SQLTransientConnectionException") || hasExceptionType( errorGroup, "SQLNonTransientConnectionException") || hasExceptionType(errorGroup,"SQLRecoverableException") || hasExceptionType(errorGroup,"SQLException") || containsIgnoreCase(message, "jdbc") || containsIgnoreCase(message, "hikari")|| containsIgnoreCase(message, "connection pool")|| containsIgnoreCase(message,"unable to acquire jdbc connection" ));
+        String message = errorGroup.getMessage();
+        return (hasExceptionType(errorGroup, "SQLTransientConnectionException") || hasExceptionType(errorGroup, "SQLNonTransientConnectionException") || hasExceptionType(errorGroup, "SQLRecoverableException") || hasExceptionType(errorGroup, "SQLException") || containsIgnoreCase(message, "jdbc") || containsIgnoreCase(message, "hikari") || containsIgnoreCase(message, "connection pool") || containsIgnoreCase(message, "unable to acquire jdbc connection"));
     }
 
     private boolean isClientAbort(ErrorGroup errorGroup) {
         String message = errorGroup.getMessage();
         return hasExceptionType(errorGroup, "ClientAbortException") || containsIgnoreCase(message, "Broken pipe") || containsIgnoreCase(message, "Connection reset by peer") || containsIgnoreCase(message, "Connection reset");
     }
+
     private boolean isTimeout(ErrorGroup errorGroup) {
         String message = errorGroup.getMessage();
         return containsIgnoreCase(message, "Connection timed out") || containsIgnoreCase(message, "Read timed out") || hasExceptionType(errorGroup, "SocketTimeoutException") || containsIgnoreCase(message, "Request timeout") || hasExceptionType(errorGroup, "TimeoutException");
@@ -116,9 +117,10 @@ public class DefaultFindingAnalyzer implements FindingAnalyzer {
 
         return finding;
     }
+
     private boolean hasExceptionType(ErrorGroup errorGroup, String exceptionName) {
         String exceptionType = errorGroup.getExceptionType();
         return exceptionType != null && exceptionType.endsWith(exceptionName);
-        }
+    }
 
 }
