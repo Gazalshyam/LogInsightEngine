@@ -1,4 +1,4 @@
-package org.logInsightEngine.dtos.ai_context;
+package org.logInsightEngine.dtos.context;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

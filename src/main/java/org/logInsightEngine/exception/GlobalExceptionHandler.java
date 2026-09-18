@@ -59,4 +59,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
+    @ExceptionHandler(AIContextSerializationException.class)
+    public ResponseEntity<ErrorResponse> handleAIContextSerializationException(AIContextSerializationException e, HttpServletRequest request){
+        ErrorResponse errorResponse = ErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(e.getMessage()).timestamp(Instant.now()).error("AI_CONTEXT_SERIALIZATION_ERROR").path(request.getRequestURI()).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+
+    @ExceptionHandler(AIResponseParsingException.class)
+    public ResponseEntity<ErrorResponse> handleAIResponseParsingException(AIResponseParsingException e, HttpServletRequest request){
+        ErrorResponse errorResponse = ErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(e.getMessage()).timestamp(Instant.now()).error("AI_CONTEXT_SERIALIZATION_ERROR").path(request.getRequestURI()).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
 }

@@ -12,10 +12,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class AIAnalysisResult {
-    String summary;
-    String probableRootCause;
-    List<String> contributingFactors;
-    List<String> affectedComponents;
-    List<String> recommendedInvestigations;
-    List<String> caveats;
+    private String summary;
+    private String probableRootCause;
+    private List<String> contributingFactors;
+    private List<String> affectedComponents;
+    private List<String> recommendedInvestigations;
+    private List<String> caveats;
 }
