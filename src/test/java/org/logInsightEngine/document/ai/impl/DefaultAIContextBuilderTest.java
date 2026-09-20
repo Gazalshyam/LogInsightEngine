@@ -7,9 +7,11 @@ import org.logInsightEngine.dtos.result.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DefaultAIContextBuilderTest {
     private final DefaultAIContextBuilder defaultAIContextBuilder = new DefaultAIContextBuilder();
+
     @Test
     void shouldBuildContextFromAnalysisResult() {
 
@@ -35,5 +37,10 @@ public class DefaultAIContextBuilderTest {
         assertSame(findings, context.getFindings());
         assertSame(correlations, context.getCorrelations());
         assertSame(timeline, context.getTimeline());
+    }
+
+    @Test
+    void shouldRejectNullAnalysisResult() {
+        assertThrows(NullPointerException.class, () -> defaultAIContextBuilder.build(null));
     }
 }

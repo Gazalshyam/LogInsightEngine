@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class DefaultLogAnalyzerIntegrationTest {
 
 
-    private DefaultLogAnalyzer defaultLogAnalyzer ;
+    private DefaultLogAnalyzer defaultLogAnalyzer;
+
     @BeforeEach
     void setUp() {
         SummaryAnalyzer summaryAnalyzer = new DefaultSummaryAnalyzer();
@@ -29,7 +30,7 @@ public class DefaultLogAnalyzerIntegrationTest {
         CorrelationAnalyzer correlationAnalyzer = new DefaultCorrelationAnalyzer();
         TimelineAnalyzer timelineAnalyzer = new DefaultTimelineAnalyzer();
 
-        defaultLogAnalyzer = new DefaultLogAnalyzer(summaryAnalyzer, severityAnalyzer, errorAnalyzer, findingAnalyzer, timelineAnalyzer,  correlationAnalyzer);
+        defaultLogAnalyzer = new DefaultLogAnalyzer(summaryAnalyzer, severityAnalyzer, errorAnalyzer, findingAnalyzer, timelineAnalyzer, correlationAnalyzer);
     }
 
     private LogEntry createLogEntry(LogLevel level, String logger, String message, String thread, Instant timestamp, String stackTrace) {
@@ -42,22 +43,23 @@ public class DefaultLogAnalyzerIntegrationTest {
         logEntry.setStackTrace(stackTrace);
         return logEntry;
     }
+
     private List<LogEntry> createRealisticLogEntries() {
         return List.of(
                 // INFO — should appear in Timeline
                 createLogEntry(LogLevel.INFO, "Application", "Application started successfully", "main", Instant.ofEpochSecond(100), null),
                 // INFO — should appear in Timeline
-                createLogEntry(LogLevel.INFO,"AuthService", "User authentication request received", "auth-thread-1", Instant.ofEpochSecond(105), null),
+                createLogEntry(LogLevel.INFO, "AuthService", "User authentication request received", "auth-thread-1", Instant.ofEpochSecond(105), null),
                 // WARN — should appear in Timeline
-                createLogEntry(LogLevel.WARN, "DatabaseService", "Database connection retry initiated", "db-thread-1",Instant.ofEpochSecond(110), null),
+                createLogEntry(LogLevel.WARN, "DatabaseService", "Database connection retry initiated", "db-thread-1", Instant.ofEpochSecond(110), null),
                 // ERROR — should become an ErrorGroup + Finding
-                createLogEntry(LogLevel.ERROR, "DatabaseService", "Unable to acquire JDBC connection", "db-thread-1", Instant.ofEpochSecond(112),"java.sql.SQLException: Unable to acquire JDBC connection\n at com.example.DatabaseService.connect(DatabaseService.java:42)"),
+                createLogEntry(LogLevel.ERROR, "DatabaseService", "Unable to acquire JDBC connection", "db-thread-1", Instant.ofEpochSecond(112), "java.sql.SQLException: Unable to acquire JDBC connection\n at com.example.DatabaseService.connect(DatabaseService.java:42)"),
 
-                createLogEntry(LogLevel.ERROR, "DatabaseService", "Unable to acquire JDBC connection", "db-thread-1",Instant.ofEpochSecond(122),"java.sql.SQLException: Unable to acquire JDBC connection\n    at com.example.DatabaseService.connect(DatabaseService.java:42)" ),
+                createLogEntry(LogLevel.ERROR, "DatabaseService", "Unable to acquire JDBC connection", "db-thread-1", Instant.ofEpochSecond(122), "java.sql.SQLException: Unable to acquire JDBC connection\n    at com.example.DatabaseService.connect(DatabaseService.java:42)"),
 
-                createLogEntry(LogLevel.ERROR, "PaymentService", "Connection timed out", "db-thread-1", Instant.ofEpochSecond(125),"java.net.SocketTimeoutException: Connection timed out\n   at com.example.PaymentService.call(PaymentService.java:87)"),
+                createLogEntry(LogLevel.ERROR, "PaymentService", "Connection timed out", "db-thread-1", Instant.ofEpochSecond(125), "java.net.SocketTimeoutException: Connection timed out\n   at com.example.PaymentService.call(PaymentService.java:87)"),
                 // DEBUG — should be excluded from Timeline
-                createLogEntry(LogLevel.DEBUG,"DatabaseService", "Connection pool debug information", "db-thread-1", Instant.ofEpochSecond(130), null)
+                createLogEntry(LogLevel.DEBUG, "DatabaseService", "Connection pool debug information", "db-thread-1", Instant.ofEpochSecond(130), null)
         );
     }
 
@@ -81,6 +83,6 @@ public class DefaultLogAnalyzerIntegrationTest {
         assertEquals(1, result.getCorrelations().size());
         Correlation correlation = result.getCorrelations().getFirst();
         assertEquals(CorrelationType.PRECEDES, correlation.getRelationshipType());
-        assertEquals( Duration.ofSeconds(13), correlation.getTimeDifference());
+        assertEquals(Duration.ofSeconds(13), correlation.getTimeDifference());
     }
 }

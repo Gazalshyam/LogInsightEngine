@@ -14,11 +14,11 @@ import java.util.List;
 @Builder
 public class AIAnalysisContext {
 
-        private Summary summary;
-        private SeverityStatistics severityStatistics;
-        private List<ErrorGroup> errorGroups;
-        private List<Finding> findings;
-        private List<Correlation> correlations;
-        private Timeline timeline;
-    }
+    private Summary summary;
+    private SeverityStatistics severityStatistics;
+    private List<ErrorGroup> errorGroups;
+    private List<Finding> findings;
+    private List<Correlation> correlations;
+    private Timeline timeline;
+}
 

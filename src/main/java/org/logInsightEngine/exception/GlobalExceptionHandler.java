@@ -60,15 +60,21 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AIContextSerializationException.class)
-    public ResponseEntity<ErrorResponse> handleAIContextSerializationException(AIContextSerializationException e, HttpServletRequest request){
+    public ResponseEntity<ErrorResponse> handleAIContextSerializationException(AIContextSerializationException e, HttpServletRequest request) {
         ErrorResponse errorResponse = ErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(e.getMessage()).timestamp(Instant.now()).error("AI_CONTEXT_SERIALIZATION_ERROR").path(request.getRequestURI()).build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
 
     @ExceptionHandler(AIResponseParsingException.class)
-    public ResponseEntity<ErrorResponse> handleAIResponseParsingException(AIResponseParsingException e, HttpServletRequest request){
+    public ResponseEntity<ErrorResponse> handleAIResponseParsingException(AIResponseParsingException e, HttpServletRequest request) {
         ErrorResponse errorResponse = ErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(e.getMessage()).timestamp(Instant.now()).error("AI_CONTEXT_SERIALIZATION_ERROR").path(request.getRequestURI()).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(LLMClientException.class)
+    public ResponseEntity<ErrorResponse> handleLLMClientException(LLMClientException e, HttpServletRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(e.getMessage()).timestamp(Instant.now()).error("LLM_CLIENT_ERROR").path(request.getRequestURI()).build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }

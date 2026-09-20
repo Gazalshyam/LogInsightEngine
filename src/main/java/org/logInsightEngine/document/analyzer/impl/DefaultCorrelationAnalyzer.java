@@ -39,11 +39,11 @@ public class DefaultCorrelationAnalyzer implements CorrelationAnalyzer {
     private CorrelationType getRelationType(ErrorGroup source, ErrorGroup related) {
 
         boolean hasSharedThread = false;
-        if(source.getImpact() != null && source.getImpact().getThreads() != null){
+        if (source.getImpact() != null && source.getImpact().getThreads() != null) {
             hasSharedThread = source.getImpact().getThreads().stream().anyMatch(related.getImpact().getThreads()::contains);
         }
         boolean hasSharedLogger = false;
-        if(source.getImpact() != null && source.getImpact().getLoggers() != null){
+        if (source.getImpact() != null && source.getImpact().getLoggers() != null) {
             hasSharedLogger = source.getImpact().getLoggers().stream().anyMatch(related.getImpact().getLoggers()::contains);
         }
         Duration timeDifference = getTimeDifference(source.getFirstOccurrence(), related.getFirstOccurrence());
@@ -52,7 +52,7 @@ public class DefaultCorrelationAnalyzer implements CorrelationAnalyzer {
         if (isSimilar(source, related)) {
             return CorrelationType.SIMILAR;
         }
-        if (hasSharedContext && sourcePrecedesRelated ) {
+        if (hasSharedContext && sourcePrecedesRelated) {
             return CorrelationType.PRECEDES;
         }
         if (isRelated(hasSharedContext, timeDifference)) {

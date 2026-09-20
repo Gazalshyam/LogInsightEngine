@@ -10,23 +10,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class JacksonResponseParser implements AIResponseParser {
 
-        private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-        public JacksonResponseParser(ObjectMapper objectMapper) {
-            this.objectMapper = objectMapper;
+    public JacksonResponseParser(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public AIAnalysisResult parse(String response) {
+
+        if (response == null || response.isBlank()) {
+            throw new AIResponseParsingException("AI response is empty");
         }
 
-        @Override
-        public AIAnalysisResult parse(String response) {
-
-            if (response == null || response.isBlank()) {
-                throw new AIResponseParsingException("AI response is empty");
-            }
-
-            try {
-                return objectMapper.readValue( response, AIAnalysisResult.class);
-            } catch (JsonProcessingException e) {
-                throw new AIResponseParsingException("Failed to parse AI response", e);
-            }
+        try {
+            return objectMapper.readValue(response, AIAnalysisResult.class);
+        } catch (JsonProcessingException e) {
+            throw new AIResponseParsingException("Failed to parse AI response", e);
         }
+    }
 }

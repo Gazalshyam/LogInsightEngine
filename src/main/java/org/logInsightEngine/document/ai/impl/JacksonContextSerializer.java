@@ -19,16 +19,14 @@ public class JacksonContextSerializer implements AIContextSerializer {
         this.objectMapper = objectMapper;
     }
 
-
     @Override
-    public String serialize(AIAnalysisContext context){
-        Objects.requireNonNull(context,"context cannot be null"
-        );
+    public String serialize(AIAnalysisContext context) {
+        Objects.requireNonNull(context, "context cannot be null");
 
         try {
             return objectMapper.writeValueAsString(context);
         } catch (JsonProcessingException e) {
-            throw new AIContextSerializationException("Failed to serialize AI analysis context",   e);
+            throw new AIContextSerializationException("Failed to serialize AI analysis context", e);
         }
     }
 

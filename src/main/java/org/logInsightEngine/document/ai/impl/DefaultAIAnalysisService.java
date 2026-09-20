@@ -27,17 +27,11 @@ public class DefaultAIAnalysisService implements AIAnalysisService {
 
     @Override
     public AIAnalysisResult analyze(AnalysisResult analysisResult) {
-
-
-
         AIAnalysisContext context = contextBuilder.build(analysisResult);
         String serializedContext = contextSerializer.serialize(context);
-        String userPrompt = promptBuilder.buildUserPrompt(serializedContext);
-
         String systemPrompt = promptBuilder.buildSystemPrompt();
-
-        String response = llmClient.generate(systemPrompt,userPrompt);
-
+        String userPrompt = promptBuilder.buildUserPrompt(serializedContext);
+        String response = llmClient.generate(systemPrompt, userPrompt);
         return responseParser.parse(response);
     }
 }

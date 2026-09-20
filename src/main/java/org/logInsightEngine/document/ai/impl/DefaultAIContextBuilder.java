@@ -11,7 +11,7 @@ import java.util.Objects;
 public class DefaultAIContextBuilder implements AIContextBuilder {
 
     @Override
-    public AIAnalysisContext build(AnalysisResult analysisResult){
+    public AIAnalysisContext build(AnalysisResult analysisResult) {
 
         Objects.requireNonNull(analysisResult, "analysisResult cannot be null");
         AIAnalysisContext aiAnalysisContext = new AIAnalysisContext();

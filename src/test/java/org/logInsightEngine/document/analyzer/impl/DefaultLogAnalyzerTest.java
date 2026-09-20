@@ -13,24 +13,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class DefaultLogAnalyzerTest {
     private DefaultLogAnalyzer defaultLogAnalyzer;
-
-    private LogEntry createLogEntry(LogLevel level, String logger, String message, String thread, Instant timestamp) {
-        LogEntry logEntry = new LogEntry();
-        logEntry.setLevel(level);
-        logEntry.setLogger(logger);
-        logEntry.setMessage(message);
-        logEntry.setThread(thread);
-        logEntry.setTimestamp(timestamp);
-        return logEntry;
-    }
-
     @Mock
     private SummaryAnalyzer summaryAnalyzer;
     @Mock
@@ -44,6 +34,16 @@ public class DefaultLogAnalyzerTest {
     @Mock
     private TimelineAnalyzer timelineAnalyzer;
 
+    private LogEntry createLogEntry(LogLevel level, String logger, String message, String thread, Instant timestamp) {
+        LogEntry logEntry = new LogEntry();
+        logEntry.setLevel(level);
+        logEntry.setLogger(logger);
+        logEntry.setMessage(message);
+        logEntry.setThread(thread);
+        logEntry.setTimestamp(timestamp);
+        return logEntry;
+    }
+
     @BeforeEach
     void setUp() {
         defaultLogAnalyzer = new DefaultLogAnalyzer(
@@ -56,15 +56,17 @@ public class DefaultLogAnalyzerTest {
 
         );
     }
-    private List<LogEntry> createLogEntries(){
+
+    private List<LogEntry> createLogEntries() {
         return List.of(
-                createLogEntry(LogLevel.INFO,"Application started", "The application has been started", "main",  Instant.ofEpochSecond(100)),
-                createLogEntry( LogLevel.ERROR,"Database connection failed","Service failed to secure a database connection", "thread-T1234", Instant.ofEpochSecond(105)),
+                createLogEntry(LogLevel.INFO, "Application started", "The application has been started", "main", Instant.ofEpochSecond(100)),
+                createLogEntry(LogLevel.ERROR, "Database connection failed", "Service failed to secure a database connection", "thread-T1234", Instant.ofEpochSecond(105)),
                 createLogEntry(LogLevel.WARN, "Retrying connection", "Trying to connect to connector service", "main", Instant.ofEpochSecond(110))
         );
     }
+
     @Test
-    public void shouldPopulateAnalysisResult(){
+    public void shouldPopulateAnalysisResult() {
         List<LogEntry> logEntries = createLogEntries();
         Summary summary = new Summary();
         SeverityStatistics severityStatistics = new SeverityStatistics();
@@ -91,7 +93,7 @@ public class DefaultLogAnalyzerTest {
     }
 
     @Test
-    public void analyze_shouldPassLogEntriesToAnalyzers(){
+    public void analyze_shouldPassLogEntriesToAnalyzers() {
         List<LogEntry> logEntries = createLogEntries();
         ErrorGroup errorGroup = new ErrorGroup();
         ErrorAnalysisResult errorAnalysisResult = new ErrorAnalysisResult();
@@ -117,7 +119,7 @@ public class DefaultLogAnalyzerTest {
     }
 
     @Test
-    public void analyze_shouldPassErrorGroupsToFindingAnalyzer(){
+    public void analyze_shouldPassErrorGroupsToFindingAnalyzer() {
         List<LogEntry> logEntries = createLogEntries();
         ErrorGroup errorGroup = new ErrorGroup();
         ErrorAnalysisResult errorAnalysisResult = new ErrorAnalysisResult();
@@ -130,7 +132,7 @@ public class DefaultLogAnalyzerTest {
     }
 
     @Test
-    public void analyze_shouldPassFindingsToTimelineAnalyzer(){
+    public void analyze_shouldPassFindingsToTimelineAnalyzer() {
         List<LogEntry> logEntries = createLogEntries();
         ErrorGroup errorGroup = new ErrorGroup();
         ErrorAnalysisResult errorAnalysisResult = new ErrorAnalysisResult();
@@ -148,7 +150,7 @@ public class DefaultLogAnalyzerTest {
     }
 
     @Test
-    public void analyze_shouldPassErrorAnalysisToCorrelationAnalyzer(){
+    public void analyze_shouldPassErrorAnalysisToCorrelationAnalyzer() {
         List<LogEntry> logEntries = createLogEntries();
         ErrorGroup errorGroup = new ErrorGroup();
         ErrorAnalysisResult errorAnalysisResult = new ErrorAnalysisResult();
@@ -161,7 +163,7 @@ public class DefaultLogAnalyzerTest {
     }
 
     @Test
-    public void analyze_emptyLogEntries_shouldStillOrchestrate(){
+    public void analyze_emptyLogEntries_shouldStillOrchestrate() {
         List<LogEntry> logEntries = List.of();
         ErrorGroup errorGroup = new ErrorGroup();
         ErrorAnalysisResult errorAnalysisResult = new ErrorAnalysisResult();

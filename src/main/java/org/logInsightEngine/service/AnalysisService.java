@@ -9,7 +9,6 @@ import org.logInsightEngine.dtos.result.SourceProcessingResult;
 import org.logInsightEngine.model.domain.AnalysisStatus;
 import org.logInsightEngine.model.domain.LogEntry;
 import org.logInsightEngine.model.domain.SourceType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

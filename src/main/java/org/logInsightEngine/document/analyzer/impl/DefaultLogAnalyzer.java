@@ -33,7 +33,7 @@ public class DefaultLogAnalyzer implements LogAnalyzer {
         SeverityStatistics severityStatistics = severityAnalyzer.analyze(logEntries);
         ErrorAnalysisResult errorAnalysisResult = errorAnalyzer.analyze(logEntries);
         List<Finding> findings = findingAnalyzer.analyze(errorAnalysisResult.getErrorGroups());
-        List<Correlation>  correlations = correlationAnalyzer.analyze(errorAnalysisResult);
+        List<Correlation> correlations = correlationAnalyzer.analyze(errorAnalysisResult);
         Timeline timeline = timelineAnalyzer.analyze(logEntries, findings);
         AnalysisResult result = new AnalysisResult();
 
