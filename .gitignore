@@ -5,10 +5,12 @@ target/
 .kotlin
 
 ### IntelliJ IDEA ###
+.idea/misc.xml
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -37,3 +39,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+hs_err_pid12658.log
+.mvn/
+mvnw.cmd
+mvnw
+

@@ -1,0 +1,72 @@
+package org.logInsightEngine.service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.logInsightEngine.document.analyzer.LogAnalyzer;
+import org.logInsightEngine.dtos.request.AnalyzeRequest;
+import org.logInsightEngine.dtos.result.AnalysisExecutionResult;
+import org.logInsightEngine.dtos.result.AnalysisResult;
+import org.logInsightEngine.dtos.result.SourceProcessingResult;
+import org.logInsightEngine.model.domain.AnalysisStatus;
+import org.logInsightEngine.model.domain.LogEntry;
+import org.logInsightEngine.model.domain.SourceType;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Slf4j
+@Service
+public class AnalysisService {
+    private final SourceProcessingService sourceProcessingService;
+    private final LogAnalyzer logAnalyzer;
+
+    public AnalysisService(SourceProcessingService sourceProcessingService, LogAnalyzer logAnalyzer) {
+        this.sourceProcessingService = sourceProcessingService;
+        this.logAnalyzer = logAnalyzer;
+    }
+
+    public AnalysisResult submitAnalysis(AnalyzeRequest analyzeRequest) {
+        // Placeholder for analysis submission logic
+        List<LogEntry> parsedLogEntries = new ArrayList<>();
+        List<SourceProcessingResult> sourceProcessingResults = sourceProcessingService.processRequest(analyzeRequest);
+        int sourcesSucceeded = 0;
+        int sourcesAttempted = sourceProcessingResults.size();
+        AnalysisExecutionResult analyzeResponse = new AnalysisExecutionResult();
+        analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
+
+        for (SourceProcessingResult result : sourceProcessingResults) {
+            if (result.isSuccess()) {
+                sourcesSucceeded++;
+                parsedLogEntries.addAll(result.getLogEntries());
+            } else {
+                if (result.getSourceType().equals(SourceType.LOG_FILE)) {
+                    log.info("Error received at log file source.");
+                    analyzeResponse.setLogFileError(result.getErrorMessage());
+                    analyzeResponse.setLogFileErrorType(result.getErrorType());
+                } else if (result.getSourceType().equals(SourceType.LOG_DATA)) {
+                    log.info("Error received at log data source.");
+                    analyzeResponse.setLogDataErrorType(result.getErrorType());
+                    analyzeResponse.setLogDataError(result.getErrorMessage());
+                }
+            }
+        }
+        if (sourcesSucceeded == sourcesAttempted && sourcesAttempted > 0) {
+            analyzeResponse.setStatus(AnalysisStatus.SUCCESS);
+        } else if (sourcesSucceeded == 0 || sourcesAttempted == 0) {
+            analyzeResponse.setStatus(AnalysisStatus.FAILED);
+        } else {
+            analyzeResponse.setStatus(AnalysisStatus.PARTIAL_SUCCESS);
+        }
+
+        return logAnalyzer.analyze(parsedLogEntries);
+    }
+
+    public AnalysisResult getAnalysisResult(String id) {
+        // Placeholder for retrieving analysis result
+        AnalysisResult analyzeResponse = new AnalysisResult();
+//        analyzeResponse.setStatus(AnalysisStatus.SUCCESS);
+//        analyzeResponse.setAnalysisId(UUID.randomUUID().toString());
+        return analyzeResponse;
+    }
+}

@@ -1,0 +1,31 @@
+package org.logInsightEngine.document.parser.impl;
+
+import org.logInsightEngine.document.parser.AbstractLogParser;
+import org.logInsightEngine.model.domain.LogEntry;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class NginxLogParser extends AbstractLogParser {
+    @Override
+    public boolean supports(List<String> nonEmptyLines) {
+        // Implementation for checking if the message is a Spring Boot log
+        return false;
+    }
+
+    @Override
+    protected boolean isStartOfLogEntry(String line) {
+        return true;
+    }
+
+    @Override
+    protected LogEntry parseLogEntryHeader(String line) {
+        return null;
+    }
+
+    @Override
+    protected void handleContinuationLine(LogEntry currentEntry, String line) {
+
+    }
+}
